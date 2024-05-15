@@ -76,8 +76,9 @@ type Config struct {
 	MetricsReporter metrics.Reporter
 	// MetricsReporter default logger(default: NoopLogger)
 
-	Tracer trace.TracerProvider
-	Logger log.Logger
+	Tracer       trace.TracerProvider
+	TraceContext propagation.TraceContext
+	Logger       log.Logger
 
 	// RepartitionTopicFormatter repartition topic name formatter function
 	// (default ApplicationId-${storeName}-repartitioned)
@@ -135,10 +136,12 @@ func (c *Config) setUp() {
 	c.Consumer.BootstrapServers = c.BootstrapServers
 	c.Consumer.Logger = c.Logger
 	c.Consumer.MetricsReporter = c.MetricsReporter
+
 	if c.Tracer == nil {
 		c.Tracer = noop.NewTracerProvider()
 	} else {
-		otel.SetTextMapPropagator(propagation.TraceContext{})
+		c.Consumer.TraceContext = propagation.TraceContext{}
+		otel.SetTextMapPropagator(c.Consumer.TraceContext)
 	}
 
 	c.Consumer.TracerProvider = c.Tracer

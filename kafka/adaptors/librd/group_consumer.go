@@ -9,6 +9,7 @@ import (
 	"github.com/gmbyapa/kstream/v2/pkg/errors"
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 	"sync"
 	"time"
@@ -25,6 +26,7 @@ type groupConsumer struct {
 	stopping       chan stopSignal
 	groupHandler   kafka.RebalanceHandler
 	tracer         trace.TracerProvider
+	traceContext   propagation.TraceContext
 	status         kafka.GroupConsumerStatus
 
 	shutdownOnce sync.Once
@@ -164,7 +166,7 @@ MAIN:
 				if g.config.ContextExtractor != nil {
 					record.ctx = g.config.ContextExtractor(record)
 				}
-
+				record.ctx = g.traceContext.Extract(record.ctx, otelconfluent.NewMessageCarrier(e))
 				g.config.Logger.DebugContext(record.ctx, fmt.Sprintf(`Message %s with key (%s) received in %s`,
 					record, record.Key(), t))
 

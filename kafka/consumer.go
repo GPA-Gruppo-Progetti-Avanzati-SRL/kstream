@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
+	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/trace"
 	"time"
 )
@@ -168,6 +169,7 @@ type ConsumerConfig struct {
 	Logger           log.Logger
 	MetricsReporter  metrics.Reporter
 	TracerProvider   sdktrace.TracerProvider
+	TraceContext     propagation.TraceContext
 	ContextExtractor RecordContextBinderFunc
 }
 
@@ -183,6 +185,7 @@ func (conf *ConsumerConfig) Copy() *ConsumerConfig {
 		ContextExtractor:        conf.ContextExtractor,
 		TracerProvider:          conf.TracerProvider,
 		MaxPollInterval:         conf.MaxPollInterval,
+		TraceContext:            conf.TraceContext,
 		ConsumerMessageChanSize: conf.ConsumerMessageChanSize,
 	}
 }
