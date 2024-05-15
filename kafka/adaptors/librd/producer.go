@@ -10,7 +10,8 @@ package librd
 import (
 	"context"
 	"fmt"
-	librdKafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	librdKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"github.com/etf1/opentelemetry-go-contrib/instrumentation/github.com/confluentinc/confluent-kafka-go/otelconfluent"
 	"github.com/gmbyapa/kstream/v2/kafka"
 	"github.com/gmbyapa/kstream/v2/pkg/errors"
 	"github.com/tryfix/log"
@@ -31,7 +32,7 @@ const (
 
 type librdProducer struct {
 	config       *ProducerConfig
-	baseProducer *librdKafka.Producer
+	baseProducer *otelconfluent.Producer
 
 	metrics struct {
 		produceLatency metrics.Observer
@@ -93,7 +94,8 @@ func NewProducer(configs *ProducerConfig) (kafka.Producer, error) {
 	configs.Logger = configs.Logger.NewLog(log.Prefixed(fmt.Sprintf(`%s(librdkafka)`, loggerPrefix)))
 
 	configs.Logger.Info(`Producer initiating...`)
-	producer, err := librdKafka.NewProducer(configs.Librd)
+	confluentProducer, err := librdKafka.NewProducer(configs.Librd)
+	producer := otelconfluent.NewProducerWithTracing(confluentProducer, otelconfluent.WithTracerProvider(configs.TracerProvider))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf(`Producer(%s) init failed`, configs.Id))
 	}
@@ -256,15 +258,16 @@ func (p *librdProducer) Restart() error {
 	if err := p.forceClose(); err != nil {
 		p.config.Logger.Warn(err)
 	}
-
 	prd, err := librdKafka.NewProducer(p.config.Librd)
+	producer := otelconfluent.NewProducerWithTracing(prd, otelconfluent.WithTracerProvider(p.config.TracerProvider))
+
 	if err != nil {
 		p.config.Logger.Fatal(err)
 	}
 
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	p.baseProducer = prd
+	p.baseProducer = producer
 
 	return nil
 }
@@ -369,7 +372,7 @@ func (p *librdProducer) getPartitionCount(topic string) (int32, error) {
 	return count, nil
 }
 
-func (p *librdProducer) librdProducer() *librdKafka.Producer {
+func (p *librdProducer) librdProducer() *otelconfluent.Producer {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 

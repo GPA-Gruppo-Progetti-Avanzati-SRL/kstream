@@ -3,11 +3,13 @@ package librd
 import (
 	"context"
 	"fmt"
-	librdKafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	librdKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"github.com/etf1/opentelemetry-go-contrib/instrumentation/github.com/confluentinc/confluent-kafka-go/otelconfluent"
 	"github.com/gmbyapa/kstream/v2/kafka"
 	"github.com/gmbyapa/kstream/v2/pkg/errors"
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
+	"go.opentelemetry.io/otel/trace"
 	"sync"
 	"time"
 )
@@ -17,13 +19,13 @@ type stopSignal struct {
 }
 
 type groupConsumer struct {
-	consumer       *librdKafka.Consumer
+	consumer       *otelconfluent.Consumer
 	config         *GroupConsumerConfig
 	consumerErrors chan error
 	stopping       chan stopSignal
 	groupHandler   kafka.RebalanceHandler
-
-	status kafka.GroupConsumerStatus
+	tracer         trace.TracerProvider
+	status         kafka.GroupConsumerStatus
 
 	shutdownOnce sync.Once
 
@@ -63,6 +65,11 @@ func NewGroupConsumer(config *GroupConsumerConfig) (kafka.GroupConsumer, error) 
 	}
 
 	con, err := librdKafka.NewConsumer(config.Librd)
+
+	if config.TracerProvider != nil {
+
+	}
+	cont := otelconfluent.NewConsumerWithTracing(con, otelconfluent.WithTracerProvider(config.TracerProvider))
 	if err != nil {
 		return nil, errors.Wrap(err, `new consumer failed`)
 	}
@@ -70,7 +77,7 @@ func NewGroupConsumer(config *GroupConsumerConfig) (kafka.GroupConsumer, error) 
 	config.Logger = config.Logger.NewLog(log.Prefixed(`GroupConsumer`))
 
 	return &groupConsumer{
-		consumer:       con,
+		consumer:       cont,
 		config:         config,
 		consumerErrors: make(chan error, 1),
 		stopping:       make(chan stopSignal, 1),

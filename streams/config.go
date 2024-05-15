@@ -16,6 +16,8 @@ import (
 	"github.com/gmbyapa/kstream/v2/streams/topology"
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
+	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel/trace/noop"
 	"time"
 )
 
@@ -71,6 +73,8 @@ type Config struct {
 	// MetricsReporter default metrics reporter(default: NoopReporter)
 	MetricsReporter metrics.Reporter
 	// MetricsReporter default logger(default: NoopLogger)
+
+	Tracer trace.TracerProvider
 	Logger log.Logger
 
 	// RepartitionTopicFormatter repartition topic name formatter function
@@ -129,10 +133,14 @@ func (c *Config) setUp() {
 	c.Consumer.BootstrapServers = c.BootstrapServers
 	c.Consumer.Logger = c.Logger
 	c.Consumer.MetricsReporter = c.MetricsReporter
-
+	if c.Tracer == nil {
+		c.Tracer = noop.NewTracerProvider()
+	}
+	c.Consumer.TracerProvider = c.Tracer
 	c.Producer.BootstrapServers = c.BootstrapServers
 	c.Producer.Logger = c.Logger
 	c.Producer.MetricsReporter = c.MetricsReporter
+	c.Producer.TracerProvider = c.Tracer
 
 	if c.Processing.Guarantee == ExactlyOnce {
 		c.Consumer.IsolationLevel = kafka.ReadCommitted

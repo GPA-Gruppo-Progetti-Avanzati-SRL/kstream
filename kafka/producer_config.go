@@ -3,6 +3,7 @@ package kafka
 import (
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type ProducerConfig struct {
@@ -17,6 +18,7 @@ type ProducerConfig struct {
 	Idempotent      bool
 	Logger          log.Logger
 	MetricsReporter metrics.Reporter
+	TracerProvider  trace.TracerProvider
 }
 
 func (conf *ProducerConfig) Copy() *ProducerConfig {
@@ -29,6 +31,7 @@ func (conf *ProducerConfig) Copy() *ProducerConfig {
 		Idempotent:       conf.Idempotent,
 		Logger:           conf.Logger,
 		MetricsReporter:  conf.MetricsReporter,
+		TracerProvider:   conf.TracerProvider,
 	}
 }
 
