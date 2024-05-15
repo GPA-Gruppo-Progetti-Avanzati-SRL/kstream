@@ -24,6 +24,7 @@ type Record interface {
 	Timestamp() time.Time
 	Headers() RecordHeaders
 	String() string
+	SetHeaders(rec []RecordHeader) error
 }
 
 // RecordHeader stores key and value for a record header.

@@ -49,6 +49,18 @@ func (r *Record) Headers() kafka.RecordHeaders {
 	return headers
 }
 
+func (r *Record) SetHeaders(rec []kafka.RecordHeader) error {
+	headers := make([]librdKafka.Header, len(rec))
+	for i, h := range rec {
+		headers[i] = librdKafka.Header{
+			Key:   string(h.Key),
+			Value: h.Value,
+		}
+	}
+	r.librd.Headers = headers
+	return nil
+}
+
 func (r *Record) Ctx() context.Context {
 	return r.ctx
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/gmbyapa/kstream/v2/backend/pebble"
 	"github.com/gmbyapa/kstream/v2/kafka"
 	librd3Adpt "github.com/gmbyapa/kstream/v2/kafka/adaptors/librd"
-	"github.com/gmbyapa/kstream/v2/kafka/adaptors/sarama"
 	"github.com/gmbyapa/kstream/v2/pkg/errors"
 	"github.com/gmbyapa/kstream/v2/streams/encoding"
 	"github.com/gmbyapa/kstream/v2/streams/state_stores"
@@ -261,10 +260,7 @@ func (b *StreamBuilder) setupOpts(opts ...BuilderOpt) {
 		)...)
 	}
 
-	admin, err := sarama.NewAdmin(b.config.BootstrapServers, sarama.WithLogger(b.config.Logger))
-	if err != nil {
-		panic(err)
-	}
+	admin := librd3Adpt.NewAdmin(b.config.BootstrapServers, librd3Adpt.WithLogger(b.config.Logger))
 
 	b.kafkaAdmin = admin
 

@@ -16,6 +16,8 @@ import (
 	"github.com/gmbyapa/kstream/v2/streams/topology"
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 	"go.opentelemetry.io/otel/trace/noop"
 	"time"
@@ -135,7 +137,10 @@ func (c *Config) setUp() {
 	c.Consumer.MetricsReporter = c.MetricsReporter
 	if c.Tracer == nil {
 		c.Tracer = noop.NewTracerProvider()
+	} else {
+		otel.SetTextMapPropagator(propagation.TraceContext{})
 	}
+
 	c.Consumer.TracerProvider = c.Tracer
 	c.Producer.BootstrapServers = c.BootstrapServers
 	c.Producer.Logger = c.Logger

@@ -198,6 +198,7 @@ func (p *librdProducer) NewRecord(
 
 func (p *librdProducer) ProduceSync(ctx context.Context, message kafka.Record) (partition int32, offset int64, err error) {
 	dChan := make(chan librdKafka.Event)
+
 	kMessage, err := p.prepareMessage(message)
 	if err != nil {
 		return 0, 0, errors.Wrapf(err, `message[%s] prepare error`, message)

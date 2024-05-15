@@ -2,7 +2,6 @@ package mocks
 
 import (
 	"errors"
-	"github.com/Shopify/sarama"
 	"github.com/gmbyapa/kstream/v2/kafka"
 	"sync"
 )
@@ -170,7 +169,8 @@ func (td *Topics) Topic(name string) (*MockTopic, error) {
 
 	t, ok := td.topics[name]
 	if !ok {
-		return t, sarama.ErrUnknownTopicOrPartition
+		return t, errors.New(`topic does not exists`)
+
 	}
 
 	return t, nil

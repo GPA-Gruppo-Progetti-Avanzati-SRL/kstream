@@ -173,6 +173,9 @@ func (a *kAdmin) fetchInfo(topics []string) (map[string]*kafka.Topic, error) {
 }
 
 func (a *kAdmin) CreateTopics(topics []*kafka.Topic) error {
+	if topics == nil || len(topics) == 0 {
+		return nil
+	}
 	var tpNames []string
 	var specifications []librdKafka.TopicSpecification
 	for _, info := range topics {
