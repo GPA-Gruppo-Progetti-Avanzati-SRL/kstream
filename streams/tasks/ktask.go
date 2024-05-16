@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/gmbyapa/kstream/v2/pkg/errors"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/codes"
 	"sync"
 	"time"
 
@@ -274,7 +276,8 @@ func (t *task) process(record *Record) error {
 
 		if t.producer.HasSerdeDlt() {
 			log.Error(" invio in dlt ")
-			t.produceDlt(ctx, err.Error())
+			t.produceDlt(ctx, err)
+			return nil
 		}
 
 		// send record to DLQ handler and mark record as ignored,
@@ -290,11 +293,16 @@ func (t *task) process(record *Record) error {
 	return nil
 }
 
-func (s *task) produceDlt(ctx context.Context, errEnc string) {
-	log.Error(errEnc)
+func (s *task) produceDlt(ctx context.Context, err error) {
 	rec := topology.RecordFromContext(ctx)
-	newKey := string(rec.Key()) + errEnc
-	record := s.producer.NewRecord(ctx, []byte(newKey), rec.Value(), s.producer.DltSerdeTopic(), rec.Partition(), rec.Timestamp(), rec.Headers(), ``)
+	_, childSpan := otel.GetTracerProvider().Tracer("produceDlt").Start(ctx, "produceDlt")
+	childSpan.SetStatus(codes.Error, err.Error())
+	childSpan.RecordError(err)
+
+	defer childSpan.End()
+	headers := append(rec.Headers(), kafka.RecordHeader{Key: []byte("error"), Value: []byte(err.Error())})
+
+	record := s.producer.NewRecord(ctx, rec.Key(), rec.Value(), s.producer.DltSerdeTopic(), rec.Partition(), rec.Timestamp(), headers, ``)
 	if _, _, err := s.producer.ProduceDlt(ctx, record); err != nil {
 		log.Error(err, `deadletter record produce failed`)
 	}

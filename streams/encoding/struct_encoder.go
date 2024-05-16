@@ -16,11 +16,13 @@ func NewStructEncoder(aStruct reflect.Type) *StructEncoder {
 }
 
 func (s StructEncoder) Encode(v interface{}) ([]byte, error) {
+	if v == nil {
+		return nil, errors.New("struct is nil")
+	}
 	t := reflect.TypeOf(v)
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
-
 	if t != s.Struct {
 		errS := fmt.Sprintf("invalid struct type %s vs %s", t.String(), s.Struct.String())
 		return nil, errors.New(errS)

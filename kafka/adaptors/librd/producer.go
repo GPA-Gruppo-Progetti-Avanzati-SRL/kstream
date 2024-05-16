@@ -233,7 +233,7 @@ func (p *librdProducer) ProduceDlt(ctx context.Context, message kafka.Record) (p
 	if err != nil {
 		return 0, 0, errors.Wrapf(err, `message[%s] prepare error`, message)
 	}
-
+	p.librdProducer()
 	err = p.librdProducer().Produce(kMessage, dChan)
 	if err != nil {
 		return 0, 0, errors.Wrap(err, `cannot send message`)
