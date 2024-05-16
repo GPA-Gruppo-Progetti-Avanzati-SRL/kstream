@@ -3,6 +3,7 @@ package encoding
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 )
 
@@ -15,8 +16,14 @@ func NewStructEncoder(aStruct reflect.Type) *StructEncoder {
 }
 
 func (s StructEncoder) Encode(v interface{}) ([]byte, error) {
-	if reflect.TypeOf(v) != s.Struct {
-		return nil, errors.New("invalid struct type")
+	t := reflect.TypeOf(v)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+
+	if t != s.Struct {
+		errS := fmt.Sprintf("invalid struct type %s vs %s", t.String(), s.Struct.String())
+		return nil, errors.New(errS)
 	}
 
 	return json.Marshal(v)

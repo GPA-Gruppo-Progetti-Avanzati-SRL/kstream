@@ -226,6 +226,36 @@ func (p *librdProducer) ProduceSync(ctx context.Context, message kafka.Record) (
 	return dmSg.TopicPartition.Partition, int64(dmSg.TopicPartition.Offset), nil
 }
 
+func (p *librdProducer) ProduceDlt(ctx context.Context, message kafka.Record) (partition int32, offset int64, err error) {
+	dChan := make(chan librdKafka.Event)
+
+	kMessage, err := p.prepareMessage(message)
+	if err != nil {
+		return 0, 0, errors.Wrapf(err, `message[%s] prepare error`, message)
+	}
+
+	err = p.librdProducer().Produce(kMessage, dChan)
+	if err != nil {
+		return 0, 0, errors.Wrap(err, `cannot send message`)
+	}
+
+	dRpt := <-dChan
+	dmSg := dRpt.(*librdKafka.Message)
+
+	if dmSg.TopicPartition.Error != nil {
+		return 0, 0, errors.Wrapf(dmSg.TopicPartition.Error, `message %s delivery failed`, message)
+	}
+
+	p.metrics.produceLatency.Observe(float64(time.Since(kMessage.Timestamp).Nanoseconds()/1e3), map[string]string{
+		`topic`: *dmSg.TopicPartition.Topic,
+	})
+
+	p.config.Logger.DebugContext(ctx, fmt.Sprintf("Delivered message to topic %s[%d]@%d",
+		message.Topic(), dmSg.TopicPartition.Partition, dmSg.TopicPartition.Offset))
+
+	return dmSg.TopicPartition.Partition, int64(dmSg.TopicPartition.Offset), nil
+}
+
 func (p *librdProducer) Close() error {
 	p.config.Logger.Info(`Producer closing...`)
 	defer p.config.Logger.Info(`Producer closed`)

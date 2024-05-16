@@ -189,6 +189,7 @@ func (s *KSource) Setup(ctx topology.SubTopologySetupContext) error {
 func (s *KSource) Run(ctx context.Context, kIn, vIn interface{}) (kOut, vOut interface{}, cont bool, err error) {
 	k, err := s.encoder.Key.Decode(kIn.([]byte))
 	if err != nil {
+		///TODO gestione deadletter consumer
 		return nil, nil, false, encoding.Err{Err: s.WrapErrWith(err, `key decode error`)}
 	}
 

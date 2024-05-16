@@ -261,6 +261,7 @@ func (t *task) process(record *Record) error {
 	_, _, _, err := t.subTopology.Source(record.Topic()).
 		Run(ctx, record.Key(), record.Value())
 	if err != nil {
+
 		// if this is a kafka producer error, return it(will be retried), otherwise ignore and exclude from
 		// re-processing(only the kafka errors can be retried here)
 		assert := func(err error) bool {
@@ -269,6 +270,11 @@ func (t *task) process(record *Record) error {
 		}
 		if producerErr := errors.UnWrapRecursivelyUntil(err, assert); producerErr != nil {
 			return producerErr
+		}
+
+		if t.producer.HasSerdeDlt() {
+			log.Error(" invio in dlt ")
+			t.produceDlt(ctx, err.Error())
 		}
 
 		// send record to DLQ handler and mark record as ignored,
@@ -282,6 +288,17 @@ func (t *task) process(record *Record) error {
 	}
 
 	return nil
+}
+
+func (s *task) produceDlt(ctx context.Context, errEnc string) {
+	log.Error(errEnc)
+	rec := topology.RecordFromContext(ctx)
+	newKey := string(rec.Key()) + errEnc
+	record := s.producer.NewRecord(ctx, []byte(newKey), rec.Value(), s.producer.DltSerdeTopic(), rec.Partition(), rec.Timestamp(), rec.Headers(), ``)
+	if _, _, err := s.producer.ProduceDlt(ctx, record); err != nil {
+		log.Error(err, `deadletter record produce failed`)
+	}
+
 }
 
 func (t *task) Start(ctx context.Context, claim kafka.PartitionClaim, _ kafka.GroupSession) {

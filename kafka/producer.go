@@ -84,6 +84,7 @@ type Producer interface {
 		headers RecordHeaders,
 		meta string) Record
 	ProduceSync(ctx context.Context, record Record) (partition int32, offset int64, err error)
+	ProduceDlt(ctx context.Context, record Record) (partition int32, offset int64, err error)
 	Restart() error
 	Close() error
 	HasSerdeDlt() bool
