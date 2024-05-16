@@ -90,7 +90,7 @@ type Config struct {
 	// ChangelogTopicNameFormatter changelog topic name formatter function
 	// (default ApplicationId-${storeName}-store-changelog)
 	ChangelogTopicNameFormatter state_stores.ChangelogTopicFormatter
-	DltSerdeTopic               string
+	DltTopic                    string
 }
 
 func NewStreamBuilderConfig() *Config {
@@ -150,7 +150,7 @@ func (c *Config) setUp() {
 	c.Producer.Logger = c.Logger
 	c.Producer.MetricsReporter = c.MetricsReporter
 	c.Producer.TracerProvider = c.Tracer
-	c.Producer.DltSerdeTopic = c.DltSerdeTopic
+	c.Producer.DltTopic = c.DltTopic
 	if c.Processing.Guarantee == ExactlyOnce {
 		c.Consumer.IsolationLevel = kafka.ReadCommitted
 		c.Producer.Acks = kafka.WaitForAll

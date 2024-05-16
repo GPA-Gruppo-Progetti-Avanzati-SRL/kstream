@@ -19,7 +19,7 @@ type ProducerConfig struct {
 	Logger          log.Logger
 	MetricsReporter metrics.Reporter
 	TracerProvider  trace.TracerProvider
-	DltSerdeTopic   string
+	DltTopic        string
 }
 
 func (conf *ProducerConfig) Copy() *ProducerConfig {
@@ -33,7 +33,7 @@ func (conf *ProducerConfig) Copy() *ProducerConfig {
 		Logger:           conf.Logger,
 		MetricsReporter:  conf.MetricsReporter,
 		TracerProvider:   conf.TracerProvider,
-		DltSerdeTopic:    conf.DltSerdeTopic,
+		DltTopic:         conf.DltTopic,
 	}
 }
 

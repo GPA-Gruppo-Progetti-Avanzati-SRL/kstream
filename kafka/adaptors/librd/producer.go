@@ -334,11 +334,11 @@ func (p *librdProducer) forceClose() error {
 
 	return nil
 }
-func (p *librdProducer) HasSerdeDlt() bool {
-	return p.config.DltSerdeTopic != ""
+func (p *librdProducer) HasDltTopic() bool {
+	return p.config.DltTopic != ""
 }
-func (p *librdProducer) DltSerdeTopic() string {
-	return p.config.DltSerdeTopic
+func (p *librdProducer) DltTopic() string {
+	return p.config.DltTopic
 }
 
 func (p *librdProducer) prepareMessage(message kafka.Record) (*librdKafka.Message, error) {
