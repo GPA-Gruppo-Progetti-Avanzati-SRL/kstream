@@ -63,6 +63,10 @@ func (s *kSink) Run(ctx context.Context, kIn, vIn interface{}) (kOut, vOut inter
 
 	keyByt, err := s.encoders.Key.Encode(kIn)
 	if err != nil {
+		if s.producer.HasSerdeDlt() {
+			errEnc := "Sink Key Encode error : " + err.Error()
+			s.produceDlt(ctx, errEnc)
+		}
 		return nil, nil, false, s.WrapErrWith(err, `sink key encode error`)
 	}
 
@@ -73,6 +77,8 @@ func (s *kSink) Run(ctx context.Context, kIn, vIn interface{}) (kOut, vOut inter
 	} else {
 		valByt, err := s.encoders.Value.Encode(vIn)
 		if err != nil {
+			errEnc := "Sink Value Encode error : " + err.Error()
+			s.produceDlt(ctx, errEnc)
 			return nil, nil, false, s.WrapErrWith(err, `sink value encode error`)
 		}
 		recordValue = valByt
@@ -93,6 +99,21 @@ func (s *kSink) Run(ctx context.Context, kIn, vIn interface{}) (kOut, vOut inter
 
 	// Sink is the last node of the pipeline
 	return s.Ignore()
+}
+
+func (s *kSink) produceDlt(ctx context.Context, errEnc string) {
+	log.Error(errEnc)
+	rec := topology.RecordFromContext(ctx)
+	newKey := string(rec.Key()) + errEnc
+	record := s.producer.NewRecord(ctx, []byte(newKey), rec.Value(), s.producer.DltSerdeTopic(), rec.Partition(), rec.Timestamp(), rec.Headers(), ``)
+	if txProducer, ok := s.producer.(kafka.TransactionalProducer); ok {
+		if err := txProducer.ProduceAsync(ctx, record); err != nil {
+			log.Error(s.WrapErrWith(err, `deadletter record produce failed`))
+		}
+	} else if _, _, err := s.producer.ProduceSync(ctx, record); err != nil {
+		log.Error(s.WrapErrWith(err, `deadletter record produce failed`))
+	}
+
 }
 
 func (s *kSink) AddEdge(_ topology.Node) {

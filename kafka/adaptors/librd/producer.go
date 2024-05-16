@@ -304,6 +304,12 @@ func (p *librdProducer) forceClose() error {
 
 	return nil
 }
+func (p *librdProducer) HasSerdeDlt() bool {
+	return p.config.DltSerdeTopic != ""
+}
+func (p *librdProducer) DltSerdeTopic() string {
+	return p.config.DltSerdeTopic
+}
 
 func (p *librdProducer) prepareMessage(message kafka.Record) (*librdKafka.Message, error) {
 	t := time.Now()

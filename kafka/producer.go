@@ -86,6 +86,8 @@ type Producer interface {
 	ProduceSync(ctx context.Context, record Record) (partition int32, offset int64, err error)
 	Restart() error
 	Close() error
+	HasSerdeDlt() bool
+	DltSerdeTopic() string
 }
 
 type PartitionerFunc func(record Record, numPartitions int32) (int32, error)
