@@ -71,7 +71,7 @@ func NewGroupConsumer(config *GroupConsumerConfig) (kafka.GroupConsumer, error) 
 	if config.TracerProvider != nil {
 
 	}
-	cont := otelconfluent.NewConsumerWithTracing(con, otelconfluent.WithTracerProvider(config.TracerProvider))
+	cont := otelconfluent.NewConsumerWithTracing(con, otelconfluent.WithTracerProvider(config.TracerProvider), otelconfluent.WithConsumerGroupID(config.GroupId))
 	if err != nil {
 		return nil, errors.Wrap(err, `new consumer failed`)
 	}
