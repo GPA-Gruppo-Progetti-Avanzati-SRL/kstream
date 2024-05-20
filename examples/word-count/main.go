@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/bxcodec/faker/v3"
+	"github.com/brianvoe/gofakeit/v7"
 	"github.com/gmbyapa/kstream/v2/kafka"
 	"github.com/gmbyapa/kstream/v2/kafka/adaptors/librd"
 	"github.com/gmbyapa/kstream/v2/streams"
@@ -109,7 +109,7 @@ func seed(logger log.Logger) {
 		record := producer.NewRecord(
 			context.Background(),
 			[]byte(`test-key`),
-			[]byte(faker.Sentence()),
+			[]byte(gofakeit.Sentence(200)),
 			TopicTextLines,
 			kafka.PartitionAny,
 			time.Now(),

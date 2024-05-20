@@ -6,12 +6,12 @@ toolchain go1.22.2
 
 require (
 	github.com/awalterschulze/gographviz v0.0.0-20190522210029-fa59802746ab
-	github.com/bxcodec/faker/v3 v3.8.1
+	github.com/brianvoe/gofakeit/v7 v7.0.3
 	github.com/cockroachdb/pebble v0.0.0-20221005185728-eec7375f9c44
 	github.com/confluentinc/confluent-kafka-go/v2 v2.4.0
 	github.com/etf1/opentelemetry-go-contrib/instrumentation/github.com/confluentinc/confluent-kafka-go/otelconfluent v1.1.0
 	github.com/google/uuid v1.6.0
-	github.com/gorilla/handlers v1.4.2
+	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
 	github.com/tryfix/log v1.2.0
 	github.com/tryfix/metrics v1.2.0
@@ -28,6 +28,7 @@ require (
 	github.com/cockroachdb/logtags v0.0.0-20190617123548-eb05cc24525f // indirect
 	github.com/cockroachdb/redact v1.0.8 // indirect
 	github.com/cockroachdb/sentry-go v0.6.1-cockroachdb.2 // indirect
+	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -51,5 +52,6 @@ require (
 	go.opentelemetry.io/otel/sdk v1.26.0 // indirect
 	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1 // indirect
 	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 )

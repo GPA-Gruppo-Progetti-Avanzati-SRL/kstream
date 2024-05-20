@@ -274,7 +274,7 @@ func (t *task) process(record *Record) error {
 			return producerErr
 		}
 
-		if t.producer.HasSerdeDlt() {
+		if t.producer.HasDltTopic() {
 			log.Error(" invio in dlt ")
 			t.produceDlt(ctx, err)
 			return nil
@@ -302,7 +302,7 @@ func (s *task) produceDlt(ctx context.Context, err error) {
 	defer childSpan.End()
 	headers := append(rec.Headers(), kafka.RecordHeader{Key: []byte("error"), Value: []byte(err.Error())})
 
-	record := s.producer.NewRecord(ctx, rec.Key(), rec.Value(), s.producer.DltSerdeTopic(), rec.Partition(), rec.Timestamp(), headers, ``)
+	record := s.producer.NewRecord(ctx, rec.Key(), rec.Value(), s.producer.DltTopic(), rec.Partition(), rec.Timestamp(), headers, ``)
 	if _, _, err := s.producer.ProduceDlt(ctx, record); err != nil {
 		log.Error(err, `deadletter record produce failed`)
 	}
