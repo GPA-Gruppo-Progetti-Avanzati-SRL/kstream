@@ -73,6 +73,12 @@ func (brs *BranchedStream) Branch(name string) Stream {
 	return nil
 }
 
+type DefinedStream struct {
+	Name     string
+	Topology topology.Topology
+	Runner   Runner
+}
+
 type Stream interface {
 	Branch(branches ...processors.BranchDetails) []Stream
 	Split(opts ...StreamOption) *BranchedStream
