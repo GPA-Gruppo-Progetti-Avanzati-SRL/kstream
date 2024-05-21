@@ -40,6 +40,7 @@ type Config struct {
 	ApplicationId string
 	// BootstrapServers a list of kafka Brokers
 	BootstrapServers []string
+	SecurityProtocol string
 	Store            struct {
 		Http struct {
 			// Enabled enable state stores http server(debug purposes only)
@@ -75,7 +76,8 @@ type Config struct {
 	// MetricsReporter default metrics reporter(default: NoopReporter)
 	MetricsReporter metrics.Reporter
 	// MetricsReporter default logger(default: NoopLogger)
-
+	SaslCfg      kafka.SaslCfg
+	SSLCfg       kafka.SSLCfg
 	Tracer       trace.TracerProvider
 	TraceContext propagation.TraceContext
 	Logger       log.Logger
@@ -97,7 +99,6 @@ func NewStreamBuilderConfig() *Config {
 	config := &Config{}
 	config.Consumer = kafka.NewConfig()
 	config.Producer = kafka.NewProducerConfig()
-
 	config.Processing.Guarantee = ExactlyOnce
 	config.Processing.ConsumerCount = 1
 	config.Processing.Buffer.FlushInterval = time.Second
@@ -137,6 +138,12 @@ func (c *Config) setUp() {
 	c.Consumer.BootstrapServers = c.BootstrapServers
 	c.Consumer.Logger = c.Logger
 	c.Consumer.MetricsReporter = c.MetricsReporter
+	c.Consumer.SecurityProtocol = c.SecurityProtocol
+	c.Consumer.SASL = c.SaslCfg
+	c.Consumer.SSL = c.SSLCfg
+	c.Producer.SecurityProtocol = c.SecurityProtocol
+	c.Producer.SASL = c.SaslCfg
+	c.Producer.SSL = c.SSLCfg
 
 	if c.Tracer == nil {
 		c.Tracer = noop.NewTracerProvider()

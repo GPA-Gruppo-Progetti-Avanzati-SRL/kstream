@@ -260,7 +260,7 @@ func (b *StreamBuilder) setupOpts(opts ...BuilderOpt) {
 		)...)
 	}
 
-	admin := librd3Adpt.NewAdmin(b.config.BootstrapServers, librd3Adpt.WithLogger(b.config.Logger))
+	admin := librd3Adpt.NewAdmin(b.config.BootstrapServers, b.config.SecurityProtocol, b.config.SaslCfg, b.config.SSLCfg, librd3Adpt.WithLogger(b.config.Logger))
 
 	b.kafkaAdmin = admin
 

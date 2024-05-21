@@ -5,6 +5,7 @@ import (
 	"github.com/gmbyapa/kstream/v2/kafka"
 	"github.com/gmbyapa/kstream/v2/pkg/errors"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"strings"
 )
 
@@ -72,8 +73,54 @@ func (conf *GroupConsumerConfig) setUp() error {
 		panic(err)
 	}
 
-	if err := conf.Librd.SetKey(`auto.offset.reset`, offset); err != nil {
-		panic(err)
+	switch conf.SecurityProtocol {
+	case "SSL":
+		if conf.SSL.CaLocation != "" {
+			if err := conf.Librd.SetKey(SecurityProtocolPropertyName, "SSL"); err != nil {
+				return errors.New(err.Error())
+			}
+			if err := conf.Librd.SetKey(SSLCaLocationPropertyName, conf.SSL.CaLocation); err != nil {
+				return errors.New(err.Error())
+			}
+			if err := conf.Librd.SetKey(EnableSSLCertificateVerificationPropertyName, !conf.SSL.SkipVerify); err != nil {
+				return errors.New(err.Error())
+			}
+		} else {
+			if err := conf.Librd.SetKey(EnableSSLCertificateVerificationPropertyName, false); err != nil {
+				return errors.New(err.Error())
+			}
+			log.Info().Str(SecurityProtocolPropertyName, conf.SecurityProtocol).Msg(" ca-location not configured")
+		}
+	case "SASL_SSL":
+		fallthrough
+	case "SASL":
+		if err := conf.Librd.SetKey(SecurityProtocolPropertyName, "SASL_SSL"); err != nil {
+			return errors.New(err.Error())
+		}
+		if err := conf.Librd.SetKey(SASLMechanismPropertyName, conf.SASL.Mechanisms); err != nil {
+			return errors.New(err.Error())
+		}
+		if err := conf.Librd.SetKey(SASLUsernamePropertyName, conf.SASL.Username); err != nil {
+			return errors.New(err.Error())
+		}
+		if err := conf.Librd.SetKey(SASLPasswordPropertyName, conf.SASL.Password); err != nil {
+			return errors.New(err.Error())
+		}
+		if conf.SASL.CaLocation != "" {
+			if err := conf.Librd.SetKey(SSLCaLocationPropertyName, conf.SASL.CaLocation); err != nil {
+				return errors.New(err.Error())
+			}
+			if err := conf.Librd.SetKey(EnableSSLCertificateVerificationPropertyName, !conf.SASL.SkipVerify); err != nil {
+				return errors.New(err.Error())
+			}
+		} else {
+			log.Info().Str(SecurityProtocolPropertyName, conf.SecurityProtocol).Msg("ca-location not configured")
+			if err := conf.Librd.SetKey(EnableSSLCertificateVerificationPropertyName, false); err != nil {
+				return errors.New(err.Error())
+			}
+		}
+	default:
+		log.Info().Str(SecurityProtocolPropertyName, conf.SecurityProtocol).Msg(" skipping security-protocol settings")
 	}
 
 	return nil

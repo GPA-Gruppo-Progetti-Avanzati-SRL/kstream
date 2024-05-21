@@ -54,11 +54,60 @@ type kAdmin struct {
 	tempTopicConfigs map[string]*kafka.Topic
 }
 
-func NewAdmin(bootstrapServer []string, options ...AdminOption) *kAdmin {
+func NewAdmin(bootstrapServer []string, security string, sasl kafka.SaslCfg, ssl kafka.SSLCfg, options ...AdminOption) *kAdmin {
 	opts := new(adminOptions)
 	opts.apply(options...)
 	config := &librdKafka.ConfigMap{
 		`bootstrap.servers`: strings.Join(bootstrapServer, `,`),
+	}
+	switch security {
+	case "SSL":
+		if ssl.CaLocation != "" {
+			if err := config.SetKey(SecurityProtocolPropertyName, "SSL"); err != nil {
+				panic(err)
+			}
+			if err := config.SetKey(SSLCaLocationPropertyName, ssl.CaLocation); err != nil {
+				panic(err)
+			}
+			if err := config.SetKey(EnableSSLCertificateVerificationPropertyName, !ssl.SkipVerify); err != nil {
+				panic(err)
+			}
+		} else {
+			if err := config.SetKey(EnableSSLCertificateVerificationPropertyName, false); err != nil {
+				panic(err)
+			}
+			log.Info("admin ca-location not configured")
+		}
+	case "SASL_SSL":
+		fallthrough
+	case "SASL":
+		if err := config.SetKey(SecurityProtocolPropertyName, "SASL_SSL"); err != nil {
+			panic(err)
+		}
+		if err := config.SetKey(SASLMechanismPropertyName, sasl.Mechanisms); err != nil {
+			panic(err)
+		}
+		if err := config.SetKey(SASLUsernamePropertyName, sasl.Username); err != nil {
+			panic(err)
+		}
+		if err := config.SetKey(SASLPasswordPropertyName, sasl.Password); err != nil {
+			panic(err)
+		}
+		if sasl.CaLocation != "" {
+			if err := config.SetKey(SSLCaLocationPropertyName, sasl.CaLocation); err != nil {
+				panic(err)
+			}
+			if err := config.SetKey(EnableSSLCertificateVerificationPropertyName, !sasl.SkipVerify); err != nil {
+				panic(err)
+			}
+		} else {
+			log.Info("admin ca-location not configured")
+			if err := config.SetKey(EnableSSLCertificateVerificationPropertyName, false); err != nil {
+				panic(err)
+			}
+		}
+	default:
+		log.Info(" admin skipping security-protocol settings")
 	}
 	logger := opts.Logger.NewLog(log.Prefixed(`kafka-admin`))
 	admin, err := librdKafka.NewAdminClient(config)

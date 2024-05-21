@@ -9,6 +9,9 @@ import (
 type ProducerConfig struct {
 	Id               string
 	BootstrapServers []string
+	SecurityProtocol string
+	SSL              SSLCfg
+	SASL             SaslCfg
 	PartitionerFunc  PartitionerFunc
 	Acks             RequiredAcks
 	Transactional    struct {
@@ -31,8 +34,11 @@ func (conf *ProducerConfig) Copy() *ProducerConfig {
 		Transactional:    conf.Transactional,
 		Idempotent:       conf.Idempotent,
 		Logger:           conf.Logger,
+		SSL:              conf.SSL,
+		SASL:             conf.SASL,
 		MetricsReporter:  conf.MetricsReporter,
 		TracerProvider:   conf.TracerProvider,
+		SecurityProtocol: conf.SecurityProtocol,
 		DltTopic:         conf.DltTopic,
 	}
 }

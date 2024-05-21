@@ -165,12 +165,14 @@ type ConsumerConfig struct {
 	EOSEnabled              bool
 	MaxPollInterval         time.Duration
 	ConsumerMessageChanSize int
-
-	Logger           log.Logger
-	MetricsReporter  metrics.Reporter
-	TracerProvider   sdktrace.TracerProvider
-	TraceContext     propagation.TraceContext
-	ContextExtractor RecordContextBinderFunc
+	SecurityProtocol        string
+	SSL                     SSLCfg
+	SASL                    SaslCfg
+	Logger                  log.Logger
+	MetricsReporter         metrics.Reporter
+	TracerProvider          sdktrace.TracerProvider
+	TraceContext            propagation.TraceContext
+	ContextExtractor        RecordContextBinderFunc
 }
 
 func (conf *ConsumerConfig) Copy() *ConsumerConfig {
@@ -181,7 +183,10 @@ func (conf *ConsumerConfig) Copy() *ConsumerConfig {
 		EOSEnabled:              conf.EOSEnabled,
 		TopicMetaFetchTimeout:   conf.TopicMetaFetchTimeout,
 		Logger:                  conf.Logger,
+		SecurityProtocol:        conf.SecurityProtocol,
 		MetricsReporter:         conf.MetricsReporter,
+		SSL:                     conf.SSL,
+		SASL:                    conf.SASL,
 		ContextExtractor:        conf.ContextExtractor,
 		TracerProvider:          conf.TracerProvider,
 		MaxPollInterval:         conf.MaxPollInterval,
