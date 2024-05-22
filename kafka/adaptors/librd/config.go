@@ -1,9 +1,9 @@
 package librd
 
 import (
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/errors"
 	librdKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/pkg/errors"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"strings"

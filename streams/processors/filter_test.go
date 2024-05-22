@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gmbyapa/kstream/v2/pkg/errors"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/errors"
 )
 
 func TestFilter_Run(t *testing.T) {

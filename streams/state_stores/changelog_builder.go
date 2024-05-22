@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gmbyapa/kstream/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/pkg/errors"
-	"github.com/gmbyapa/kstream/v2/streams/encoding"
-	"github.com/gmbyapa/kstream/v2/streams/stores"
-	"github.com/gmbyapa/kstream/v2/streams/topology"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/errors"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/encoding"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/stores"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/topology"
 	logger "github.com/tryfix/log"
 )
 

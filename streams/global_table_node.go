@@ -2,8 +2,8 @@ package streams
 
 import (
 	"context"
-	"github.com/gmbyapa/kstream/v2/backend"
-	"github.com/gmbyapa/kstream/v2/streams/topology"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/backend"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/topology"
 )
 
 type GlobalTableNode struct {

@@ -1,7 +1,7 @@
 package librd
 
 import (
-	"github.com/gmbyapa/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
 )
 
 type partitionClaim struct {

@@ -1,4 +1,4 @@
-module github.com/gmbyapa/kstream/v2
+module github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2
 
 go 1.22
 
@@ -13,6 +13,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
+	github.com/rs/zerolog v1.28.0
 	github.com/tryfix/log v1.2.0
 	github.com/tryfix/metrics v1.2.0
 	go.opentelemetry.io/otel v1.26.0
@@ -46,7 +47,6 @@ require (
 	github.com/prometheus/common v0.45.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
-	github.com/rs/zerolog v1.28.0 // indirect
 	go.opentelemetry.io/contrib v1.0.0 // indirect
 	go.opentelemetry.io/otel/metric v1.26.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.26.0 // indirect

@@ -10,8 +10,8 @@ package librd
 import (
 	"context"
 	"fmt"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
 	librdKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/kafka"
 	"time"
 )
 

@@ -1,10 +1,10 @@
 package streams
 
 import (
-	"github.com/gmbyapa/kstream/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/streams/state_stores"
-	"github.com/gmbyapa/kstream/v2/streams/stores"
-	"github.com/gmbyapa/kstream/v2/streams/topology"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/state_stores"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/stores"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/topology"
 	"github.com/tryfix/log"
 )
 

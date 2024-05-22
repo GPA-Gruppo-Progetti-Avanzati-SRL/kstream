@@ -3,15 +3,15 @@ package tasks
 import (
 	"context"
 	"fmt"
-	"github.com/gmbyapa/kstream/v2/pkg/errors"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/errors"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 	"sync"
 	"time"
 
-	"github.com/gmbyapa/kstream/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/pkg/async"
-	"github.com/gmbyapa/kstream/v2/streams/topology"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/async"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/topology"
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
 )

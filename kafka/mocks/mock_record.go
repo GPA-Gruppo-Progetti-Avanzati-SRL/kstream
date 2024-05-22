@@ -3,7 +3,7 @@ package mocks
 import (
 	"context"
 	"fmt"
-	"github.com/gmbyapa/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
 	"time"
 )
 

@@ -2,11 +2,11 @@ package streams
 
 import (
 	"fmt"
-	"github.com/gmbyapa/kstream/v2/streams/encoding"
-	"github.com/gmbyapa/kstream/v2/streams/processors"
-	"github.com/gmbyapa/kstream/v2/streams/state_stores"
-	"github.com/gmbyapa/kstream/v2/streams/stores"
-	"github.com/gmbyapa/kstream/v2/streams/topology"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/encoding"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/processors"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/state_stores"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/stores"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/topology"
 )
 
 type TopicNameFormatter func(topic string) func(ctx topology.BuilderContext, nodeId topology.NodeId) string

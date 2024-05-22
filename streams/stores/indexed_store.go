@@ -3,9 +3,9 @@ package stores
 import (
 	"context"
 	"fmt"
-	"github.com/gmbyapa/kstream/v2/backend"
-	"github.com/gmbyapa/kstream/v2/pkg/errors"
-	"github.com/gmbyapa/kstream/v2/streams/encoding"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/backend"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/errors"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/encoding"
 
 	"sync"
 	"time"

@@ -3,10 +3,10 @@ package librd
 import (
 	"context"
 	"fmt"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/errors"
 	librdKafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/etf1/opentelemetry-go-contrib/instrumentation/github.com/confluentinc/confluent-kafka-go/otelconfluent"
-	"github.com/gmbyapa/kstream/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/pkg/errors"
 	"github.com/tryfix/log"
 	"github.com/tryfix/metrics"
 	"go.opentelemetry.io/otel/propagation"

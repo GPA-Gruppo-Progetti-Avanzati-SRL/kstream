@@ -3,9 +3,9 @@ package state_stores
 import (
 	"context"
 
-	"github.com/gmbyapa/kstream/v2/kafka"
-	"github.com/gmbyapa/kstream/v2/pkg/errors"
-	"github.com/gmbyapa/kstream/v2/streams/stores"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/kafka"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/pkg/errors"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/stores"
 )
 
 type OffsetStore interface {

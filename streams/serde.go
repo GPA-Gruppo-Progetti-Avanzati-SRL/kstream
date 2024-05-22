@@ -1,7 +1,7 @@
 package streams
 
 import (
-	"github.com/gmbyapa/kstream/v2/streams/encoding"
+	"github.com/GPA-Gruppo-Progetti-Avanzati-SRL/kstream/v2/streams/encoding"
 	"reflect"
 )
 
